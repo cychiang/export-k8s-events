@@ -7,3 +7,8 @@ variable "secret_key" {
   type        = string
   description = "AWS secret key"
 }
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+}

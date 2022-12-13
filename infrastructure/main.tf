@@ -10,7 +10,7 @@ terraform {
 provider "aws" {
   access_key = var.access_key
   secret_key = var.secret_key
-  region     = "eu-north-1"
+  region     = var.region
 }
 
 resource "aws_s3_bucket" "kubernetes_events_bucket" {
