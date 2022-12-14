@@ -18,7 +18,7 @@ Requirements:
   export TF_VAR_secret_key=${AWS_SECRET_KEY}
   export TF_VAR_region=${AWS_REGION}
   ```
-    
+
 ## System Overview
 
 ![image](img/system-design.jpg)
@@ -34,22 +34,38 @@ The system contains three parts:
 The following steps are tested in the MacOS only.
 
 1. Install and start a local Kubernetes with kind
-   ```bash
-   # Install kind 
-   brew install kind
-   # Create a Kubernetes cluster with kind
-   kind create cluster
-   ```
+    ```bash
+    # Install kind 
+    brew install kind
+    # Create a Kubernetes cluster with kind
+    kind create cluster
+    ```
 2. Create AWS infrastructure with terraform
-   ```bash
-   cd infrastructure
-   terraform init
-   terraform plan
-   terraform apply
-   ```
+    ```bash
+    cd infrastructure
+    terraform init
+    terraform plan
+    terraform apply
+    export TF_VAR_firehose_s3_stream_name=$(terraform output -raw firehose_s3_stream_name)
+    ```
 3. Deploy Kubernetes services for testing
-   ```bash
-   cd services
-   kustomize build . | envsubst > services.yaml
-   kubectl apply -f services.yaml
-   ```
+    ```bash
+    cd services
+    kustomize build . | envsubst > services.yaml
+    kubectl apply -f services.yaml
+    ```
+4. Create an Athena table in AWS console
+    ```sql
+    CREATE EXTERNAL TABLE kubernetes_events (
+    createdAt string,
+        namespace string,
+        kind string,
+        message string,
+        name string,
+        reason string,
+        type string
+    )
+
+    ROW FORMAT  serde 'org.apache.hive.hcatalog.data.JsonSerDe'
+    LOCATION 's3://kubernetes-events-bucket/data/'
+    ```

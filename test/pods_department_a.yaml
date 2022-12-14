@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-a
+  namespace: department-a
+  labels:
+    monitoring: enabled
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.23.3
+      ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-b
+  namespace: department-a
+  labels:
+    monitoring: enabled
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.23.3
+      ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-c
+  namespace: department-a
+  labels:
+    monitoring: enabled
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.23.3
+      ports:
+        - containerPort: 80

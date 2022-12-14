@@ -33,14 +33,16 @@ data:
     route:
       routes:
         - match:
-            - kind: "Pod|Deployment|ReplicaSet"
+            - kind: "Pod"
+              labels:
+                monitoring: "enabled"
               receiver: "firehose"
 
     receivers:
       - name: "firehose"
         firehose:
-          deliveryStreamName: "firehose-events-stream"
-          region: eu-north-1
+          deliveryStreamName: ${TF_VAR_firehose_s3_stream_name}
+          region: ${TF_VAR_region}
           layout:
             type: "{{ .Type }}"
             kind: "{{ .InvolvedObject.Kind }}"

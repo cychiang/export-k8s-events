@@ -1,0 +1,4 @@
+resources:
+  - namespaces.yaml
+  - pods_department_a.yaml
+  - pods_department_b.yaml

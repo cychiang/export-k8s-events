@@ -16,7 +16,7 @@ provider "aws" {
 resource "aws_s3_bucket" "kubernetes_events_bucket" {
   bucket        = "kubernetes-events-bucket"
   force_destroy = true
-  tags = {
+  tags          = {
     Managed = "terraform"
   }
 }
@@ -42,14 +42,14 @@ resource "aws_iam_role" "firehose_role" {
   ]
 }
 EOF
-  tags = {
+  tags               = {
     Managed = "terraform"
   }
 }
 
 resource "aws_iam_role_policy" "firehose_role_policy" {
-  name = "firehose_role_events_bucket_inline_policy"
-  role = aws_iam_role.firehose_role.id
+  name   = "firehose_role_events_bucket_inline_policy"
+  role   = aws_iam_role.firehose_role.id
   policy = jsonencode({
     Version : "2012-10-17"
     Statement : [
@@ -90,10 +90,9 @@ resource "aws_kinesis_firehose_delivery_stream" "firehose_s3_stream" {
   extended_s3_configuration {
     role_arn            = aws_iam_role.firehose_role.arn
     bucket_arn          = aws_s3_bucket.kubernetes_events_bucket.arn
-    prefix              = "data/namespace=!{partitionKeyFromQuery:namespace}/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/"
-    error_output_prefix = "errors/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/!{firehose:error-output-type}/"
-    buffer_size = 64
-
+    prefix              = "data/!{partitionKeyFromQuery:namespace}/!{timestamp:yyyy}/!{timestamp:MM}/!{timestamp:dd}/!{timestamp:HH}/"
+    error_output_prefix = "errors/!{timestamp:yyyy}/!{timestamp:MM}/!{timestamp:dd}/!{timestamp:HH}/!{firehose:error-output-type}/"
+    buffer_size         = 64
     processing_configuration {
       enabled = true
       processors {
